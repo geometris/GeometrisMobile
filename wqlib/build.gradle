@@ -30,7 +30,7 @@ android {
 
 }
 
-group = "com.github.Geometris2"
+group = "com.github.Geometris"
 
 
 dependencies {
