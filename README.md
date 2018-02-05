@@ -190,8 +190,7 @@ Then during your activity creation, initialize the scanner and set up your event
 ```java
 mScanButton = (ImageButton) findViewById(R.id.buttonScan);
     mScanButton.setOnClickListener(mScanButtonListener);
-    mScanner = new WQScanner(results);
-```
+    mScanner = new WQScanner(results);;```
 
 ### Starting the Scan
 
@@ -249,9 +248,9 @@ The event handle will receive the data, which may be converted to an easily acce
 static RequestHandler myEventHandler = new RequestHandler() {
     @Override
     public void onRecv(@NonNull Context context, @NonNull BaseRequest request) {
-        mData = request.
+        mData = request;
         if(mData != null && mData.requestId == BaseRequest.OBD_MEASUREMENT) {
-            GeoData geoData = (GeoData) bs.getObject();
+            GeoData geoData = (GeoData) mData.getObject();
             if(geoData!= null)
                 // do stuff ....
         }
