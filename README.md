@@ -46,7 +46,8 @@ To use the library, you will need to address these points of integration:
 1. Initialization and Cleanup
 2. Scanning for WhereQubes
 3. Data transfer, sending requests and receiving data from a connected Whereqube
-4. We recommend that scanning and data transfer be handled as separate activities.
+
+We recommend that scanning and data transfer be handled as separate activities.
 
 ## Initialization and Cleanup of the Library
 
