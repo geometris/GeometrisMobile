@@ -1,0 +1,75 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+
+android {
+
+    lintOptions {
+        abortOnError false
+    }
+
+    compileSdkVersion 26
+
+
+
+    defaultConfig {
+        minSdkVersion 26
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+group = "com.github.Geometris2"
+
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:support-v4:26.1.0'
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+
+    implementation 'no.nordicsemi.android.support.v18:scanner:1.0.0'
+    implementation 'joda-time:joda-time:2.9.9'
+}
+
+
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+task androidJavadocs(type: Javadoc, dependsOn: 'assembleRelease') {
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    android.libraryVariants.all { variant ->
+        if (variant.name == 'release') {
+            owner.classpath += variant.javaCompile.classpath
+        }
+    }
+    source = android.sourceSets.main.java.srcDirs
+    exclude '**/R.html', '**/R.*.html', '**/index.html'
+}
+task javadocJar(type: Jar, dependsOn: androidJavadocs) {
+    classifier = 'javadoc'
+    from androidJavadocs.destinationDir
+    // options.encoding = 'UTF-8'
+}
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
