@@ -1,4 +1,4 @@
-#Geometris Mobile Resources
+# Geometris Mobile Resources
 
 To add the library as a dependency to your project, 
 
@@ -33,13 +33,13 @@ dependencies {
 
 
 
-#Geometris Whereqube Bluetooth Integration Library
+# Geometris Whereqube Bluetooth Integration Library
 
 This library allows for Android applications to receive data from Geometris Whereqube telematics devices, including data about vehicle engine hours, speed, location, vin, etc.
 
 This supports usage for applications that implement the US Federal Motor Carrier Safety Administration regulation compliance for the ELD mandate (see https://www.fmcsa.dot.gov/hours-service/elds/faqs )
 
-##Using the Library
+## Using the Library
 
 To use the library, you will need to address these points of integration:
 
@@ -48,7 +48,7 @@ To use the library, you will need to address these points of integration:
 3. Data transfer, sending requests and receiving data from a connected Whereqube
 4. We recommend that scanning and data transfer be handled as separate activities.
 
-##Initialization and Cleanup of the Library
+## Initialization and Cleanup of the Library
 
 We recommend doing initialization and cleanup in the Application class:
 
@@ -72,7 +72,7 @@ public void onTerminate()
 }
 ```
 
-##Scanning for Available Wherequbes.
+## Scanning for Available Wherequbes.
 
 Before scanning, best practice is to check for an existing connection, and go to the 
 appropriate activity if so, eg:
@@ -192,7 +192,7 @@ mScanButton = (ImageButton) findViewById(R.id.buttonScan);
     mScanner = new WQScanner(results);
 ```
 
-###Starting the Scan
+### Starting the Scan
 
 Supposing your scan starts in a button click event, the following code illustrates how to begin the scan:
 
@@ -233,7 +233,7 @@ View.OnClickListener mScanButtonListener = new View.OnClickListener() {
 ```
 
 
-##Data Transfer
+## Data Transfer
 
 Use of the WherequbeService singleton object provides access to data transfer between client and device.
 It allows registration of call backs when receiving different types of data, eg:
