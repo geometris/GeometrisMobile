@@ -61,7 +61,7 @@ public class WQScanner {
      * Begins scanning for the given duration
      * @param scanDuration scan duration in milliseconds before timing out.
      */
-    @RequiresPermission("android.permission.BLUETOOTH")
+    @RequiresPermission(allOf = {"android.permission.BLUETOOTH", "android.permission.BLUETOOTH_ADMIN"})
     public void start(long scanDuration) {
         Log.d(TAG, "Scan Started ...");
         BluetoothLeScannerCompat scanner = BluetoothLeScannerCompat.getScanner();
@@ -75,6 +75,7 @@ public class WQScanner {
     /**
      * Halts the scan.
      */
+    @RequiresPermission(allOf = {"android.permission.BLUETOOTH", "android.permission.BLUETOOTH_ADMIN"})
     public void stop() {
         BluetoothLeScannerCompat scanner = BluetoothLeScannerCompat.getScanner();
         scanner.stopScan(this.scanCallback);
