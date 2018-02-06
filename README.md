@@ -27,7 +27,7 @@ dependencies {
     implementation 'com.android.support:support-v4:26.1.0'
     implementation 'joda-time:joda-time:2.9.9'
 
-    compile 'com.github.geometris:GeometrisMobile:1.0.1'
+    compile 'com.github.geometris:GeometrisMobile:1.0.2'
 }
 ```
 
@@ -190,7 +190,9 @@ Then during your activity creation, initialize the scanner and set up your event
 ```java
 mScanButton = (ImageButton) findViewById(R.id.buttonScan);
     mScanButton.setOnClickListener(mScanButtonListener);
-    mScanner = new WQScanner(results);;```
+    mScanner = new WQScanner(results);
+```
+    
 
 ### Starting the Scan
 
