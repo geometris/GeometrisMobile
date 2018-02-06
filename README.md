@@ -190,7 +190,9 @@ Then during your activity creation, initialize the scanner and set up your event
 ```java
 mScanButton = (ImageButton) findViewById(R.id.buttonScan);
     mScanButton.setOnClickListener(mScanButtonListener);
-    mScanner = new WQScanner(results);;```
+    mScanner = new WQScanner(results);
+```
+    
 
 ### Starting the Scan
 
