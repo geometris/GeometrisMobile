@@ -73,6 +73,24 @@ public void onTerminate()
 }
 ```
 
+The WherequbeService also needs to be initialized, chronologically after the Wqa object initialization.
+Initialization of the WherequbeService requires a context as an argument. An "onCreate"
+for an activity, such as an application's main activity, is therefore a perfect place to do this:
+
+ ```java
+@Override protected void onCreate(Bundle savedInstanceState) {
+ super.onCreate(savedInstanceState);
+
+ // Init Device
+ WherequbeService.getInstance().initialize(this);
+
+ if(WherequbeService.getInstance().isConnected())
+ {
+     // maybe go off to another activity ...
+ }
+ ```
+
+
 ## Scanning for Available Wherequbes.
 
 Before scanning, best practice is to check for an existing connection, and go to the 
