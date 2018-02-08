@@ -12,7 +12,7 @@ import java.util.Map;
  * Represents vehicle and location data as provided by the Whereqube over bluetooth.
  */
 public class GeoData implements Serializable {
-
+    private Integer protocolId;
     private String vin;
     private Double odometer;     // HiResTotalDistance
     private DateTime odometerTimeStamp;
@@ -37,6 +37,7 @@ public class GeoData implements Serializable {
      * and the unidentified events are empty.
      */
     public GeoData() {
+        protocolId = null;
         vin = null;
         odometer = null;     // HiResTotalDistance
         odometerTimeStamp = null;
@@ -58,6 +59,24 @@ public class GeoData implements Serializable {
      * @return True if the any of the data have been set, false otherwise
      */
     public boolean isDataSet(){ return dataSet;}
+
+    /**
+     * the protocol version
+     * @return the protocol version
+     */
+    public Integer getProtocol() {
+        return this.protocolId;
+    }
+
+    /**
+     * Sets the protocol version to the given parameter.
+     * @param protocol value for the protocol version.
+     */
+    public void setProtocol(Integer protocol) {
+        this.protocolId = protocol;
+        dataSet = true;
+    }
+
 
     /**
      * Placeholder, not implemented.
@@ -330,6 +349,7 @@ public class GeoData implements Serializable {
      */
     public GeoData copy() {
         GeoData newGeoData = new GeoData();
+        newGeoData.protocolId = this.protocolId;
         newGeoData.vin = this.vin;
         newGeoData.latitude = this.latitude;        // Latitude
         newGeoData.longitude = this.longitude;        // Longitude

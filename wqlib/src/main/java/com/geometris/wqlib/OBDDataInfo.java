@@ -30,17 +30,16 @@ public class OBDDataInfo {
     private Byte totalPacket;
     private Set<Byte> pi;
     private HashMap<Byte, byte[]> packetList;
-    //private ArrayList<Byte> pi;
-    // private ArrayList<byte[]> packetList;
+
     private boolean complete;
     StringBuilder VINsb = new StringBuilder();
 
     public OBDDataInfo() {
-        //  this.pi = new ArrayList<Byte>();
+
         this.pi = new HashSet<>();
         this.protocolId = -1;
         this.totalPacket=0;
-        //this.packetList = new ArrayList<byte[]>();
+
         this.packetList = new HashMap<>();
         this.geoData = new GeoData();
         this.complete = false;
@@ -185,6 +184,10 @@ public class OBDDataInfo {
         HashMap<Byte, byte[]> packets = getPacketList();
 
         // PROTOCOL ZERO
+
+        geoData.setProtocol( getProtocolId().intValue());
+
+
         if(getProtocolId()==0){
             Byte ind = 0, totalPacket = getTotalPacket();
 
