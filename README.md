@@ -51,6 +51,17 @@ We recommend that scanning and data transfer be handled as separate activities.
 
 ## Initialization and Cleanup of the Library
 
+
+First, the service needs to be declared in the application's AndroidManifestxml file:
+
+```
+<application>
+
+<service
+    android:name="com.geometris.wqlib.WQSmartService"
+    android:enabled="true" />
+```
+
 We recommend doing initialization and cleanup in the Application class:
 
 public class App extends Application { AppModel mModel;
@@ -61,7 +72,7 @@ public void onCreate()
 {
     super.onCreate();
     Wqa.getInstance().initialize(this);
-    mModel = AppModel.getInstance();
+    
 }
 
 @Override
