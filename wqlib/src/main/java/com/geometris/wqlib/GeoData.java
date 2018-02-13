@@ -11,6 +11,7 @@ import java.util.Map;
 /**
  * Represents vehicle and location data as provided by the Whereqube over bluetooth.
  */
+
 public class GeoData implements Serializable {
     private Integer protocolId;
     private String vin;
@@ -30,7 +31,6 @@ public class GeoData implements Serializable {
     private ArrayList<UnidentifiedEvent> unidentifiedEventArrayList;
     private boolean dataSet =false;
 
-
     /**
      * Constructor.
      * By default, all properties begin with null values,
@@ -39,13 +39,13 @@ public class GeoData implements Serializable {
     public GeoData() {
         protocolId = null;
         vin = null;
-        odometer = null;     // HiResTotalDistance
+        odometer = 0.0;     // HiResTotalDistance
         odometerTimeStamp = null;
-        engTotalHours=null;
+        engTotalHours=0.0;
         engTotalHoursTimestamp = null;
-        vehicleSpeed = null; //vehicle Speed
+        vehicleSpeed = 0.0; //vehicle Speed
         vehicleSpeedTimestamp = null;
-        engineRpm = null;    // Engine RPM
+        engineRpm = 0.0;    // Engine RPM
         engineRpmTimestamp = null;
         latitude = null;        // Latitude
         longitude = null;        // Longitude
@@ -59,6 +59,15 @@ public class GeoData implements Serializable {
      * @return True if the any of the data have been set, false otherwise
      */
     public boolean isDataSet(){ return dataSet;}
+
+    /**
+     * Placeholder, not implemented.
+     * @param fields fields to set
+     * @return this object.
+     */
+    public GeoData putAllFields(Map<String, String> fields) {
+        return this;
+    }
 
     /**
      * the protocol version
@@ -75,16 +84,6 @@ public class GeoData implements Serializable {
     public void setProtocol(Integer protocol) {
         this.protocolId = protocol;
         dataSet = true;
-    }
-
-
-    /**
-     * Placeholder, not implemented.
-     * @param fields fields to set
-     * @return this object.
-     */
-    public GeoData putAllFields(Map<String, String> fields) {
-        return this;
     }
 
     /**
@@ -140,7 +139,6 @@ public class GeoData implements Serializable {
         dataSet = true;
     }
 
-
     /**
      *
      * @return Age of GPS fix, in minutes
@@ -154,7 +152,6 @@ public class GeoData implements Serializable {
     public void setGpsTime(Long gpsTime){
         this.gpsTime = gpsTime;
     }
-
 
     /**
      *
@@ -226,6 +223,7 @@ public class GeoData implements Serializable {
     {
         this.odometerTimeStamp= odometerTimestamp;
     }
+
 
     /**
      *

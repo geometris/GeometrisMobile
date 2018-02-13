@@ -27,7 +27,7 @@ dependencies {
     implementation 'com.android.support:support-v4:26.1.0'
     implementation 'joda-time:joda-time:2.9.9'
 
-    compile 'com.github.geometris:GeometrisMobile:1.0.4'
+    compile 'com.github.geometris:GeometrisMobile:1.0.5'
 }
 ```
 
