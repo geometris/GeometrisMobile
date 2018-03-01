@@ -19,7 +19,7 @@ import java.util.UUID;
  * To be used with a WQSmartService instance.
  */
 public class WherequbeService {
-    public static final String TAG = "GeoManager";
+    public static final String TAG = "Geometris";
     public static final int DEFAULT_REQ_TIME_OUT = 250;
     private static WherequbeService instance = new WherequbeService();
     protected WQSmartService mService = null;
@@ -96,9 +96,12 @@ public class WherequbeService {
     public boolean connect(String address) {
         Log.d(TAG, "WherequbeService: connecting ..." + address);
         if(!Wqa.getInstance().isInitialized()) {
-            throw new IllegalStateException("Lib is not initialized.");
+            throw new IllegalStateException("Lib is not initialized");
         } else if(this.mService == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalStateException("Service is not initialized");
+        }
+        else if(address.isEmpty() || address.equals("") || address == null){
+            throw new IllegalArgumentException("Invalid Address");
         } else {
             return this.mService.connect(address);
         }
@@ -110,7 +113,7 @@ public class WherequbeService {
      */
     public void disconnect() {
         if(this.mService == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalStateException("Service is not initialized");
         } else {
             this.mService.disconnect();
             //this.mMHT.shutdown();
@@ -132,7 +135,7 @@ public class WherequbeService {
      * @param context Context in which the service runs.
      */
     public void destroy(Context context) {
-        this.setTXNotification(Boolean.valueOf(false));
+        //  this.setTXNotification(Boolean.valueOf(false));
         this.runInForegroundCancel();
         if(this.mMHT != null) {
             this.mMHT.interrupt();

@@ -19,7 +19,7 @@ import no.nordicsemi.android.support.v18.scanner.ScanSettings.Builder;
  * Scans bluetooth radio for available connections to Whereqube devices.
  */
 public class WQScanner {
-    public static final String TAG = "GeometrisManager";
+    public static final String TAG = "Geometris";
     private WQScanner.ScanResultListener mListener;
     private List<Whereqube> mWherequbes = new ArrayList();
 

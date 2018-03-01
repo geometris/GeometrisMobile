@@ -32,7 +32,7 @@ import java.util.UUID;
 public class WQSmartService extends Service {
 
 
-    private static final String TAG = "GeometrisManager";
+    private static final String TAG = "Geometris";
 
     public static final int MESSAGE_SCAN_RESULT = 1;
     public static final int MESSAGE_CONNECTED = 2;
@@ -69,7 +69,7 @@ public class WQSmartService extends Service {
     private BluetoothAdapter mBtAdapter = null;
     private String mBluetoothDeviceAddress =null;
     public BluetoothGatt mGattClient = null;
-    private int mConnectionState = 0;
+    private int mConnectionState = BluetoothAdapter.STATE_DISCONNECTED;
 
 
     // Characteristic currently waiting to have a notification value written to it.
@@ -88,7 +88,7 @@ public class WQSmartService extends Service {
     public void LogMessage(String tag, String msg)
     {
         //if(GeoPreferences.debug)
-            Log.d(tag, msg);
+        Log.d(tag, msg);
     }
 
     /**
@@ -109,14 +109,16 @@ public class WQSmartService extends Service {
                 Log.d(TAG, "WQSS: Connected to GATT server.");
                 Log.d(TAG, "WQSS: Attempting to start service discovery:" + mGattClient.discoverServices());
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+                mConnectionState = BluetoothProfile.STATE_DISCONNECTED;
                 refreshDeviceCache();
+                requestQueue.clear();
+                currentRequest = null;
                 if(mGattClient != null) {
                     disconnect();
                     mGattClient.close();
                     mGattClient = null;
                 }
                 intentAction = "com.geometris.WQ.ACTION_GATT_DISCONNECTED";
-                WQSmartService.this.mConnectionState = BluetoothProfile.STATE_DISCONNECTED;
                 Log.d(TAG, "WQSS: Disconnected from GATT server.");
                 WQSmartService.this.broadcastUpdate(intentAction);
             }
@@ -383,7 +385,7 @@ public class WQSmartService extends Service {
             if(this.mBluetoothDeviceAddress != null && address.equals(this.mBluetoothDeviceAddress) && this.mGattClient != null) {
                 Log.d(TAG, "WQSS: Trying to use an existing mBluetoothGatt for connection.");
                 if(this.mGattClient.connect()) {
-                    this.mConnectionState = 1;
+                    this.mConnectionState = BluetoothAdapter.STATE_CONNECTING;
                     return true;
                 } else {
                     return false;
@@ -398,7 +400,7 @@ public class WQSmartService extends Service {
                     this.refreshDeviceCache();
                     Log.d(TAG, "WQSS: Trying to create a new connection.");
                     this.mBluetoothDeviceAddress = address;
-                    this.mConnectionState = 1;
+                    this.mConnectionState = BluetoothAdapter.STATE_CONNECTING;
                     return true;
                 }
             }
@@ -429,6 +431,10 @@ public class WQSmartService extends Service {
 
     public boolean isCharacterisiticExists( UUID serviceUuid, UUID characteristicUuid)
     {
+        if(!isConnected() || mGattClient == null) {
+            Log.w(TAG, "WQSS: ICE BluetoothAdapter not initialized");
+            return false;
+        }
         BluetoothGattService serviceObject = mGattClient.getService(serviceUuid);
         if (serviceObject != null) {
             mPendingCharacteristic = serviceObject.getCharacteristic(characteristicUuid);
@@ -600,7 +606,10 @@ public class WQSmartService extends Service {
         // This currentRequest object will be used when we get the value back asynchronously in the callback.
         currentRequest = new WQSmartRequest(WQSmartRequest.RequestType.CHARACTERISTIC_NOTIFICATION, requestId, service,
                 characteristic, null,  value);
-
+        if(!isConnected() || mGattClient == null){
+            Log.w(TAG, "WQSS: PNR BluetoothAdapter not initialized");
+            return;
+        }
         BluetoothGattService serviceObject = mGattClient.getService(currentRequest.serviceUuid);
         if (serviceObject != null) {
             mPendingCharacteristic = serviceObject.getCharacteristic(characteristic);
@@ -632,6 +641,10 @@ public class WQSmartService extends Service {
      */
     private void performCharacValueRequest(int requestId, UUID service, UUID characteristic) {
         // This currentRequest object will be used when we get the value back asynchronously in the callback.
+        if(!isConnected() || mGattClient == null) {
+            // throw new NullPointerException("GATT client not started.");
+            Log.w(TAG, "WQSS: PCVR BluetoothAdapter not initialized");
+        }
         currentRequest = new WQSmartRequest(WQSmartRequest.RequestType.READ_CHARACTERISTIC, requestId, service, characteristic, null);
         BluetoothGattService serviceObject = mGattClient.getService(service);
         if (serviceObject != null) {
@@ -660,6 +673,10 @@ public class WQSmartService extends Service {
      */
     private void performDescValueRequest(int requestId, UUID service, UUID characteristic, UUID descriptor) {
         // This currentRequest object will be used when we get the value back asynchronously in the callback.
+        if(!isConnected() || mGattClient == null) {
+            // throw new NullPointerException("GATT client not started.");
+            Log.w(TAG, "WQSS: PDVR BluetoothAdapter not initialized");
+        }
         currentRequest = new WQSmartRequest(WQSmartRequest.RequestType.READ_CHARACTERISTIC, requestId, service, characteristic,
                 descriptor);
         BluetoothGattService serviceObject = mGattClient.getService(service);
@@ -691,9 +708,13 @@ public class WQSmartService extends Service {
      *         The value to write to the characteristic.
      */
     private void performCharacWrite(int requestId, UUID service, UUID characteristic,  byte[] value) {
+        if(!isConnected() || mGattClient == null) {
+            Log.w(TAG, "WQSS: PCW BluetoothAdapter not initialized");
+            return;
+        }
         currentRequest =
                 new WQSmartRequest(WQSmartRequest.RequestType.WRITE_CHARACTERISTIC, requestId, service, characteristic, null,
-                         value);
+                        value);
         BluetoothGattService serviceObject = mGattClient.getService(service);
         if (serviceObject != null) {
             BluetoothGattCharacteristic characteristicObject = serviceObject.getCharacteristic(characteristic);
@@ -719,8 +740,10 @@ public class WQSmartService extends Service {
      * @return Boolean result of operation.
      */
     private boolean enableNotification(boolean enable, BluetoothGattCharacteristic characteristic) {
-        if (mGattClient == null) {
-            throw new NullPointerException("GATT client not started.");
+        if(!isConnected() || mGattClient == null) {
+            // throw new NullPointerException("GATT client not started.");
+            Log.w(TAG, "WQSS: EN BluetoothAdapter not initialized");
+            return false;
         }
         if (!mGattClient.setCharacteristicNotification(characteristic, enable)) {
             return false;

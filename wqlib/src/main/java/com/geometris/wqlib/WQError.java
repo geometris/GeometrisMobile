@@ -6,7 +6,7 @@ import android.text.TextUtils;
  * Represents an error received from a Whereqube device.
  */
 public class WQError {
-    private static final String TAG = "WQError";
+    private static final String TAG = "Geometris";
     public static final String KEY_RESULT = "error";
     public static final String KEY_CODE = "errorCode";
     public static final String KEY_CAUSE = "errorCause";
