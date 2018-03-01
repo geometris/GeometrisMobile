@@ -12,6 +12,9 @@ public class DeviceAddress implements Serializable {
      */
     public String address;
 
+    /**
+      Constructor.
+     */
     DeviceAddress(String address){
         this.address = address;
     }
