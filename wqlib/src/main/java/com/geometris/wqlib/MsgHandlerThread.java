@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class MsgHandlerThread extends HandlerThread {
 
-    public static final String TAG = "GeometrisManager";
+    public static final String TAG = "Geometris";
     Handler mHandler = null;
     WherequbeService mWS;
     final Context mContext;

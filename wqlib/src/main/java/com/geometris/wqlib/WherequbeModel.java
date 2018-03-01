@@ -7,7 +7,7 @@ import android.content.IntentFilter;
  */
 
 public class WherequbeModel {
-    public static final String TAG = "GeometrisManager";
+    public static final String TAG = "Geometris";
     public static final int BLE_NUS_MAX_DATA_LEN = 20;
     public static final String ACTION_GATT_CONNECTED = "com.geometris.WQ.ACTION_GATT_CONNECTED";
     public static final String ACTION_GATT_DISCONNECTED = "com.geometris.WQ.ACTION_GATT_DISCONNECTED";
