@@ -87,6 +87,19 @@ public class WherequbeService {
         }
     }
 
+
+    /**
+     * Checks whether service is fully initialize to make connection.
+     */
+    public boolean isServiceInitialized(){
+        if(!Wqa.getInstance().isInitialized()) {
+            return false;
+        } else if(this.mService == null) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Connects to the Whereqube at the given address.
      * @param address address of the whereqube to connect to
