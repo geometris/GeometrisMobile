@@ -23,6 +23,8 @@ public class GeoData implements Serializable {
     private DateTime vehicleSpeedTimestamp;
     private Double engineRpm;    // Engine RPM
     private DateTime engineRpmTimestamp;
+    private Double fuelLevel;    // Fuel Level
+    private DateTime fuelLevelTimestamp;
     private Double latitude;        // Latitude
     private Double longitude;        // Longitude
     private Long gpsTime;
@@ -47,6 +49,8 @@ public class GeoData implements Serializable {
         vehicleSpeedTimestamp = null;
         engineRpm = 0.0;    // Engine RPM
         engineRpmTimestamp = null;
+        fuelLevel = 0.0;//Fuel Level
+        fuelLevelTimestamp = null;
         latitude = null;        // Latitude
         longitude = null;        // Longitude
         gpsTime = null;
@@ -258,6 +262,40 @@ public class GeoData implements Serializable {
         this.engineRpmTimestamp = engineRpmTimestamp;
     }
 
+
+    /**
+     *
+     * @return engine revolutions per minute
+     */
+    public Double getFuelLevel(){
+        return this.fuelLevel;
+    }
+
+    /**
+     * {@link GeoData#getFuelLevel()}
+     * @param fuelLevel value to set fuel level
+     * @return returns this object
+     */
+    public GeoData setFuelLevel(Double fuelLevel){
+        this.fuelLevel = fuelLevel;
+        dataSet = true;
+        return this;
+    }
+
+    /**
+     *
+     * @return gets the Fuel Level timestamp
+     */
+    public DateTime getFuelLevelTimestamp(){ return this.fuelLevelTimestamp;}
+
+    /**
+     * {@link GeoData#getFuelLevelTimestamp()}
+     * @param fuelLevelTimestamp value to set fuel level timestamp
+     */
+    public void setFuelLevelTimestamp(DateTime fuelLevelTimestamp){
+        this.fuelLevelTimestamp = fuelLevelTimestamp;
+    }
+
     /**
      *
      * @return gets the vehicle speed.
@@ -356,6 +394,8 @@ public class GeoData implements Serializable {
         newGeoData.odometerTimeStamp = this.odometerTimeStamp;
         newGeoData.engineRpm = this.engineRpm;    // Engine RPM
         newGeoData.engineRpmTimestamp = this.engineRpmTimestamp;
+        newGeoData.fuelLevel = this.fuelLevel;    //Fuel Level
+        newGeoData.fuelLevelTimestamp = this.fuelLevelTimestamp;
         newGeoData.vehicleSpeed = this.vehicleSpeed; //vehicle Speed
         newGeoData.vehicleSpeedTimestamp = this.vehicleSpeedTimestamp;
         newGeoData.timeStamp = this.timeStamp;
