@@ -7,6 +7,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -195,6 +196,13 @@ public class OBDDataInfo {
                         geoData.setVehicleSpeedTimestamp(now);
                         break;
                     case 3:
+                        double fuel_level = (double) WQData.getIntValue(WQData.FORMAT_UINT32,
+                                1,packet);
+                        if (fuel_level != -1)
+                            geoData.setFuelLevel(fuel_level);
+                        geoData.setFuelLevelTimestamp(now);
+                        Log.d(TAG, "fuel:"+fuel_level);
+
                         break;
 
                     case 4:
@@ -292,6 +300,13 @@ public class OBDDataInfo {
 
                     case 0x06: //FUEL LEVEL
                         index_count+=2;
+                        tbytes= WQData.fixUint32Endian(geobuff, index_count);
+                        double fuel_level = WQData.getIntValue(WQData.FORMAT_UINT32, 0, tbytes);
+                        if (fuel_level != -1) {
+                            geoData.setFuelLevel(fuel_level);
+                        }
+                        geoData.setFuelLevelTimestamp(now);
+                        Log.d(TAG, "fuel:"+fuel_level);
                         index_count = index_count+4;
 
                         break;
@@ -460,6 +475,7 @@ public class OBDDataInfo {
     sb.append(new String("vi:"+geoData.getVin()+"("+now+")"));
     sb.append(new String("od:"+geoData.getOdometer()+"("+now+")"));
     sb.append(new String("r:"+geoData.getEngineRPM()+"("+now+")"));
+    sb.append(new String("fl:"+geoData.getFuelLevel()+"("+now+")"));
     sb.append(new String("sp:"+geoData.getVehicleSpeed()+"("+now+")"));
     sb.append(new String("enhr:"+geoData.getEngTotalHours()+"("+now+")"));
     sb.append(new String("lt:"+geoData.getLatitude()));
@@ -467,6 +483,20 @@ public class OBDDataInfo {
     DateTime _startDate = new DateTime( geoData.getGpsTime() );
     DateTimeFormatter formatter1 = DateTimeFormat.forPattern("yyyy/M/d h:m:s a");
     sb.append(new String("gt:"+formatter1.print(_startDate)));
+    sb.append("TUL: "+geoData.getTotalUdrvEvents() + " ");
+    ArrayList<UnidentifiedEvent> uList =  geoData.getUnidentifiedEventArrayList();
+    for(int i = 0; i <uList.size();i++ ){
+        UnidentifiedEvent ue = uList.get(i);
+        sb.append(new String("( ure:"+ue.getReason()+ " "));
+        sb.append(new String("uts:"+ue.getTimestamp()+" "));
+        sb.append(new String("uhr:"+ue.getEngTotalHours() + " "));
+        sb.append(new String("us:"+ue.getVehicleSpeed()+" "));
+        sb.append(new String("uo:"+ue.getOdometer()+ " "));
+        sb.append(new String("ult:"+ue.getLatitude()+ " "));
+        sb.append(new String("uln:"+ue.getLongitude()+ " "));
+        sb.append(new String("ugt:"+ue.getGPSTimestamp()+ ")"));
+
+    }
     String logString = new String(sb);
     Log.e(TAG, logString);
     Log.d(TAG, "New Data Updated: RPM:  " + geoData.getEngineRPM() + ", Time: " + formatter.print(now));
