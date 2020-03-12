@@ -90,6 +90,7 @@ public class WherequbeService {
 
     /**
      * Checks whether service is fully initialize to make connection.
+     * @return boolean
      */
     public boolean isServiceInitialized(){
         if(!Wqa.getInstance().isInitialized()) {
