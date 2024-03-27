@@ -28,7 +28,6 @@ public class GeoData implements Serializable {
     private Double latitude;        // Latitude
     private Double longitude;        // Longitude
     private Long gpsTime;
-    private Double gpsHeading;    // Heading
     private DateTime timeStamp;
     private Integer totalUdrvEvents;
     private ArrayList<UnidentifiedEvent> unidentifiedEventArrayList;
@@ -54,7 +53,6 @@ public class GeoData implements Serializable {
         fuelLevelTimestamp = null;
         latitude = null;        // Latitude
         longitude = null;        // Longitude
-        gpsHeading = null;
         gpsTime = null;
         timeStamp = null;
         totalUdrvEvents = null;
@@ -145,14 +143,6 @@ public class GeoData implements Serializable {
         dataSet = true;
     }
 
-    public Double getGpsHeading() {
-        return gpsHeading;
-    }
-
-    public void setGpsHeading(Double gpsHeading) {
-        this.gpsHeading = gpsHeading;
-        dataSet = true;
-    }
     /**
      *
      * @return Age of GPS fix, in minutes
@@ -400,7 +390,6 @@ public class GeoData implements Serializable {
         newGeoData.latitude = this.latitude;        // Latitude
         newGeoData.longitude = this.longitude;        // Longitude
         newGeoData.gpsTime = this.gpsTime;
-        newGeoData.gpsHeading = this.gpsHeading;
         newGeoData.odometer = this.odometer;     // HiResTotalDistance
         newGeoData.odometerTimeStamp = this.odometerTimeStamp;
         newGeoData.engineRpm = this.engineRpm;    // Engine RPM
