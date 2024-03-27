@@ -402,6 +402,16 @@ public class OBDDataInfo {
                         Log.d(TAG, "LATLON TIMESTAMP: " + formatter1.print(_startDate));
                         index_count = index_count+4;
                         break;
+                    case 0x1F:
+                        index_count+=2;
+                        tbytes= WQData.fixUint32Endian(geobuff, index_count);
+                        double heading = WQData.getIntValue(WQData.FORMAT_UINT32, 0, tbytes);
+                        if (heading != -1) {
+                            geoData.setGpsHeading(heading);
+                        }
+
+                        index_count = index_count+4;
+                        break;
                     case 0x16:
                     case 0x17:
                     case 0x18:
