@@ -446,7 +446,7 @@ public class OBDDataInfo {
                                     /*val contains unidentified driver event timestamp*/
                                 break;
                             case 0x17:
-                                Integer tstamp = WQData.getIntValue(WQData.FORMAT_UINT32,0, tbytes);
+                                long tstamp = WQData.getIntValue(WQData.FORMAT_UINT32,0, tbytes);
                                 Log.d(TAG, "timestamp:" + tstamp       +", ");
                                 unidentifiedEvent.setTimestamp(tstamp);
                                         /*val contains unidentified driver event timestamp*/
@@ -492,7 +492,7 @@ public class OBDDataInfo {
                                         /*val contains unidentified driver event longitude*/
                                 break;
                             case 0x1D:
-                                Integer gpsTime = WQData.getIntValue(WQData.FORMAT_UINT32, 0, tbytes);
+                                long gpsTime = WQData.getIntValue(WQData.FORMAT_UINT32, 0, tbytes);
                                 // Log.d(TAG, "location time:" +gpsTime+"\r\n" );
                                 unidentifiedEvent.setGPSTimestamp(gpsTime);
                                         /*val contains unidentified driver location time*/
