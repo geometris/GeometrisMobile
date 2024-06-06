@@ -12,7 +12,9 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 import android.os.ParcelUuid;
 import android.support.v4.content.LocalBroadcastManager;
@@ -71,6 +73,10 @@ public class WQSmartService extends Service {
     public BluetoothGatt mGattClient = null;
     private int mConnectionState = BluetoothAdapter.STATE_DISCONNECTED;
 
+    /**
+     * Broadcast receiver for bluetooth status
+     */
+    BluetoothStateObserver mBluetoothStateObserver;
 
     // Characteristic currently waiting to have a notification value written to it.
     private BluetoothGattCharacteristic mPendingCharacteristic = null;
@@ -92,6 +98,56 @@ public class WQSmartService extends Service {
     }
 
     /**
+     * Disconnect from Gatt client
+     * @see BluetoothGattCallback
+     */
+    public void disconnectOnStateChange (int status) {
+
+        if (mConnectionState == BluetoothProfile.STATE_DISCONNECTED) {
+            return;
+        }
+
+        mConnectionState = BluetoothProfile.STATE_DISCONNECTED;
+        Log.d(TAG, "WQSS: Device disconnectOnStateChange() " + status);
+
+        refreshDeviceCache();
+        requestQueue.clear();
+        currentRequest = null;
+        if(mGattClient != null) {
+            mGattClient.close();
+            mGattClient = null;
+        }
+
+        String intentAction;
+
+        if (status == 62) {
+            // Error BLE_HCI_CONN_FAILED_TO_BE_ESTABLISHED thrown by BluetoothGatt
+            Log.w(TAG, "WQSS: Status code 62 returned by GATT server");
+            Log.w(TAG, "WQSS: Connection failed, should try to reconnect to device");
+            intentAction = "com.geometris.WQ.ACTION_GATT_CONNECTION_FAILED";
+        } else {
+            intentAction = "com.geometris.WQ.ACTION_GATT_DISCONNECTED";
+            Log.d(TAG, "WQSS: Disconnected from GATT server.");
+        }
+
+        WQSmartService.this.broadcastUpdate(intentAction);
+    }
+
+    class BluetoothStateObserver extends AbstractBluetoothStateObserver {
+
+        @Override
+        public void onEnabled() {
+            Log.d(TAG, "WQSS: Bluetooth onEnabled()");
+        }
+
+        @Override
+        public void onDisabled() {
+            Log.d(TAG, "WQSS: Bluetooth onDisabled() disconnectOnStateChange");
+            disconnectOnStateChange(99999);  // random value
+        }
+    }
+
+    /**
      * This is where most of the interesting stuff happens in response to changes in BLE state for a client.
      */
     private BluetoothGattCallback mGattCallbacks = new BluetoothGattCallback() {
@@ -109,18 +165,8 @@ public class WQSmartService extends Service {
                 Log.d(TAG, "WQSS: Connected to GATT server.");
                 Log.d(TAG, "WQSS: Attempting to start service discovery:" + mGattClient.discoverServices());
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
-                mConnectionState = BluetoothProfile.STATE_DISCONNECTED;
-                refreshDeviceCache();
-                requestQueue.clear();
-                currentRequest = null;
-                if(mGattClient != null) {
-                    disconnect();
-                    mGattClient.close();
-                    mGattClient = null;
-                }
-                intentAction = "com.geometris.WQ.ACTION_GATT_DISCONNECTED";
-                Log.d(TAG, "WQSS: Disconnected from GATT server.");
-                WQSmartService.this.broadcastUpdate(intentAction);
+                Log.d(TAG, "WQSS: onConnectionStateChange disconnectOnStateChange()");
+                disconnectOnStateChange(status);
             }
         }
 
@@ -306,6 +352,13 @@ public class WQSmartService extends Service {
     }
 
     public boolean initialize(WherequbeService wqService) {
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+
+        mBluetoothStateObserver = new BluetoothStateObserver();
+        registerReceiver(mBluetoothStateObserver, intentFilter);
+
         if(this.mBtManager == null) {
             this.mBtManager = (BluetoothManager)this.getSystemService(Context.BLUETOOTH_SERVICE);
             if(this.mBtManager == null) {
@@ -343,6 +396,10 @@ public class WQSmartService extends Service {
         Log.d(TAG, "WQSS: onDestroy");
         if (mGattClient != null)
             mGattClient.close();
+
+        if (mBluetoothStateObserver != null) {
+            unregisterReceiver(mBluetoothStateObserver);
+        }
         super.onDestroy();
     }
 
@@ -392,11 +449,25 @@ public class WQSmartService extends Service {
                 }
             } else {
                 BluetoothDevice device = this.mBtAdapter.getRemoteDevice(address);
+                Log.d(TAG, "WQSS: Creating new mBluetoothGatt for connection.");
+
                 if(device == null) {
                     Log.w(TAG, "WQSS: Device not found.  Unable to connect.");
                     return false;
                 } else {
-                    this.mGattClient = device.connectGatt(this, false, this.mGattCallbacks);
+
+                     if (Build.VERSION.SDK_INT >= 23) {
+                        Log.w(TAG, "WQSS: Using TRANSPORT_LE parameter");
+
+                        // Fix added for issue where BluetoothGatt would throw status=62
+                        // using TRANSPORT_LE parameter
+                        this.mGattClient = device.connectGatt(this, false, this.mGattCallbacks, 2);
+                    } else {
+                        Log.w(TAG, "WQSS: Without using TRANSPORT_LE parameter");
+
+                        this.mGattClient = device.connectGatt(this, false, this.mGattCallbacks);
+                    }
+
                     this.refreshDeviceCache();
                     Log.d(TAG, "WQSS: Trying to create a new connection.");
                     this.mBluetoothDeviceAddress = address;
@@ -410,6 +481,7 @@ public class WQSmartService extends Service {
             return false;
         }
     }
+
 
     public void disconnect() {
         if(this.mBtAdapter != null && this.mGattClient != null) {

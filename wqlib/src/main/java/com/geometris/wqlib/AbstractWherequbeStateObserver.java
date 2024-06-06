@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 
 /**
@@ -11,11 +12,12 @@ import android.support.v4.content.LocalBroadcastManager;
  * onError(), onSynced() and onDisconnected()
  * and react to these intents when Geometris WhereQube devices
  * interact via Bluetooth.
- *
  */
 public abstract class AbstractWherequbeStateObserver extends BroadcastReceiver {
 
-    public AbstractWherequbeStateObserver(){
+    private String TAG = "WherequbeStateObserver";
+
+    public AbstractWherequbeStateObserver() {
 
     }
 
@@ -23,17 +25,22 @@ public abstract class AbstractWherequbeStateObserver extends BroadcastReceiver {
      * Receives the intent and routes the data to the appropriate method call,
      * including onConnection(), onDisconnected(), onDiscovered(), onError(),
      * onSynced() -- these must be overridden in a derived class
-     * @param context The context in which the receiver is runnig.
-     * @param intent The Intent being received.
+     *
+     * @param context The context in which the receiver is running.
+     * @param intent  The Intent being received.
      */
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
+        Log.d(TAG, "onReceive: " + action);
+
         if (action.equals("com.geometris.WQ.ACTION_GATT_CONNECTED")) {
             this.onConnected();
         } else if (action.equals("com.geometris.WQ.ACTION_GATT_DISCONNECTED")) {
             this.onDisconnected();
         } else if (action.equals("com.geometris.WQ.ACTION_GATT_SERVICES_DISCOVERED")) {
             this.onDiscovered();
+        } else if (action.equals("com.geometris.WQ.ACTION_GATT_CONNECTION_FAILED")) {
+            this.onError(new WQError(62, "Unknown"));
         } else {
             int code;
             String cause;
@@ -71,6 +78,7 @@ public abstract class AbstractWherequbeStateObserver extends BroadcastReceiver {
 
     /**
      * Will be called when retrieval of data from a WhereQube device fails.
+     *
      * @param var1 Identifies the specific error.
      * @see WQError
      */
@@ -78,6 +86,7 @@ public abstract class AbstractWherequbeStateObserver extends BroadcastReceiver {
 
     /**
      * Registers this broadcast receiver with the intents filter from WherequbeModel.
+     *
      * @param context The context in which the receiver is running.
      * @see WherequbeModel
      */
@@ -87,6 +96,7 @@ public abstract class AbstractWherequbeStateObserver extends BroadcastReceiver {
 
     /**
      * Unregisters this broadcast receiver.
+     *
      * @param context The context in which the receiver is running.
      */
     public void unregister(Context context) {
