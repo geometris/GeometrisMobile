@@ -1,6 +1,6 @@
 # Geometris Mobile Resources
 
-To add the library as a dependency to your project, 
+To add the library as a dependency to your project,
 
 1. Add the jitpack maven to your project root level build script:
 
@@ -16,22 +16,20 @@ allprojects {
 ```
 
 2. Add a dependency to the library in the modules that need it, along with additional
-dependencies you will likely need to use the library:
+   dependencies you will likely need to use the library:
 
 ```
 dependencies {
-    
+
     ...
-      
+
 
     implementation 'com.android.support:support-v4:26.1.0'
     implementation 'joda-time:joda-time:2.9.9'
 
-    compile 'com.github.geometris:GeometrisMobile:1.0.10'
+   implementation 'com.github.truckxinc:GeometrisAndroid:1.0.14'
 }
 ```
-
-
 
 # Geometris Whereqube Bluetooth Integration Library
 
@@ -50,7 +48,6 @@ To use the library, you will need to address these points of integration:
 We recommend that scanning and data transfer be handled as separate activities.
 
 ## Initialization and Cleanup of the Library
-
 
 First, the service needs to be declared in the application's AndroidManifestxml file:
 
@@ -72,7 +69,7 @@ public void onCreate()
 {
     super.onCreate();
     Wqa.getInstance().initialize(this);
-    
+
 }
 
 @Override
@@ -89,23 +86,22 @@ Initialization of the WherequbeService requires a context as an argument.
 An "onCreate" for an activity, such as an application's main activity,
 is therefore a perfect place to do this:
 
- ```java
+```java
 @Override protected void onCreate(Bundle savedInstanceState) {
- super.onCreate(savedInstanceState);
+super.onCreate(savedInstanceState);
 
- // Init Device
- WherequbeService.getInstance().initialize(this);
+// Init Device
+WherequbeService.getInstance().initialize(this);
 
- if(WherequbeService.getInstance().isConnected())
- {
-     // maybe go off to another activity ...
- }
- ```
-
+if(WherequbeService.getInstance().isConnected())
+{
+    // maybe go off to another activity ...
+}
+```
 
 ## Scanning for Available Wherequbes.
 
-Before scanning, best practice is to check for an existing connection, and go to the 
+Before scanning, best practice is to check for an existing connection, and go to the
 appropriate activity if so, eg:
 
 ```java
@@ -117,8 +113,8 @@ if(WherequbeService.getInstance().isConnected())
     }
 ```
 
-Derive your own class from AbstractWherequbeStateObserver to 
-receive callbacks for common events such as device connected, disconnected, discovered, etc. 
+Derive your own class from AbstractWherequbeStateObserver to
+receive callbacks for common events such as device connected, disconnected, discovered, etc.
 This can also be used to kick off an activity to transfer data from the Whereqube after connection.
 
 For example:
@@ -132,7 +128,7 @@ class MyObserver extends AbstractWherequbeStateObserver
         runOnUiThread(new Runnable() {
             public void run() {
                 String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
-                
+
 
                 AppModel.getInstance().mConnectTime = System.currentTimeMillis();
 
@@ -157,7 +153,7 @@ class MyObserver extends AbstractWherequbeStateObserver
         runOnUiThread(new Runnable() {
             public void run() {
                 String currentDateTimeString = DateFormat.getTimeInstance().format(new Date());
-                
+
                 Log.e(TAG, "Unexpected DISCONNECT event");
 
             }
@@ -178,7 +174,6 @@ Then create an instance of this class and register its hosting activity:
 mWherequbeObserver.register(this);
 ```
 
-
 In order to initiate a scan, you will need an instance of the bluetooth manager (API level 18 and above):
 
 ```java
@@ -191,8 +186,8 @@ final BluetoothManager bluetoothManager =
         finish();
         return;
     }
-```    
-    
+```
+
 Set up a scan result listener:
 
 ```java
@@ -201,7 +196,7 @@ WQScanner.ScanResultListener results = new WQScanner.ScanResultListener()
     @Override
     public void onScanCompleted(final List<Whereqube> wqubes) {
         Log.i(TAG, "Whereqube scanned " + wqubes.size());
-        
+
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -222,7 +217,6 @@ mScanButton = (ImageButton) findViewById(R.id.buttonScan);
     mScanButton.setOnClickListener(mScanButtonListener);
     mScanner = new WQScanner(results);
 ```
-    
 
 ### Starting the Scan
 
@@ -264,7 +258,6 @@ View.OnClickListener mScanButtonListener = new View.OnClickListener() {
 };
 ```
 
-
 ## Data Transfer
 
 Use of the WherequbeService singleton object provides access to data transfer between client and device.
@@ -286,16 +279,15 @@ static RequestHandler myEventHandler = new RequestHandler() {
             if(geoData!= null)
                 // do stuff ....
         }
-        
+
         ..
     }
 };
 ```
 
-Request types are defined in the library RequestType class. 
+Request types are defined in the library RequestType class.
 
-
-Sending requests to the Whereqube to query for information is done with sendRequest() using 
+Sending requests to the Whereqube to query for information is done with sendRequest() using
 predefined request classes in the library, some examples:
 
 ```java

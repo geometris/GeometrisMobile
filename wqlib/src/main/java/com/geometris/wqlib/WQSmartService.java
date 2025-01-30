@@ -17,6 +17,7 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.ParcelUuid;
+import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -130,7 +131,8 @@ public class WQSmartService extends Service {
             Log.d(TAG, "WQSS: Disconnected from GATT server.");
         }
 
-        WQSmartService.this.broadcastUpdate(intentAction);
+        // TODO: add  status code here
+        WQSmartService.this.broadcastUpdate(intentAction, "reason", String.valueOf(status));
     }
 
     class BluetoothStateObserver extends AbstractBluetoothStateObserver {
@@ -161,7 +163,7 @@ public class WQSmartService extends Service {
                 currentRequest = null;
                 intentAction = "com.geometris.WQ.ACTION_GATT_CONNECTED";
                 mConnectionState =  BluetoothProfile.STATE_CONNECTED;
-                broadcastUpdate(intentAction);
+                broadcastUpdate(intentAction, null, null);
                 Log.d(TAG, "WQSS: Connected to GATT server.");
                 Log.d(TAG, "WQSS: Attempting to start service discovery:" + mGattClient.discoverServices());
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
@@ -174,7 +176,7 @@ public class WQSmartService extends Service {
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 Log.v(TAG, "WQSS: onServicesDiscovered mBluetoothGatt = " + mGattClient);
-                broadcastUpdate("com.geometris.WQ.ACTION_GATT_SERVICES_DISCOVERED");
+                broadcastUpdate("com.geometris.WQ.ACTION_GATT_SERVICES_DISCOVERED", null, null);
                 mWherequbeService.mMHT.serviceDiscovered();
             }
             else
@@ -286,8 +288,13 @@ public class WQSmartService extends Service {
     public WQSmartService() {
     }
 
-    private void broadcastUpdate(String action) {
+    private void broadcastUpdate(String action, @Nullable String key, @Nullable String value) {
         Intent intent = new Intent(action);
+
+        if (key != null && value != null) {
+            intent.putExtra(key, value);
+        }
+
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 

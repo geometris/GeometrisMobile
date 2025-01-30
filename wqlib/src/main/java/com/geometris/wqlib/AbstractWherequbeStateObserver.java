@@ -36,7 +36,9 @@ public abstract class AbstractWherequbeStateObserver extends BroadcastReceiver {
         if (action.equals("com.geometris.WQ.ACTION_GATT_CONNECTED")) {
             this.onConnected();
         } else if (action.equals("com.geometris.WQ.ACTION_GATT_DISCONNECTED")) {
-            this.onDisconnected();
+            String statusCode = intent.getStringExtra("reason");
+            Log.d("WhereQube", "onReceive ACTION_GATT_DISCONNECTED statusCode: " + statusCode);
+            this.onDisconnected(statusCode);
         } else if (action.equals("com.geometris.WQ.ACTION_GATT_SERVICES_DISCOVERED")) {
             this.onDiscovered();
         } else if (action.equals("com.geometris.WQ.ACTION_GATT_CONNECTION_FAILED")) {
@@ -74,7 +76,7 @@ public abstract class AbstractWherequbeStateObserver extends BroadcastReceiver {
     /**
      * Will be called when a WhereQube device disconnects.
      */
-    public abstract void onDisconnected();
+    public abstract void onDisconnected(String statusCode);
 
     /**
      * Will be called when retrieval of data from a WhereQube device fails.
