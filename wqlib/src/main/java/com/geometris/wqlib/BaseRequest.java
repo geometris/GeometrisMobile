@@ -1,6 +1,5 @@
 package com.geometris.wqlib;
 
-import android.support.annotation.NonNull;
 
 import org.joda.time.Duration;
 

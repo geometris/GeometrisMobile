@@ -1,13 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    compileSdk 35
+    namespace "com.geometris.geometrismobile"
+
     defaultConfig {
         applicationId "com.geometris.geometrismobile"
-        minSdkVersion 18
-        targetSdkVersion 26
+        minSdk 21
+        targetSdk 35
         versionCode 1
-        versionName "1.0.4"
+        versionName "1.0.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -20,7 +22,9 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:appcompat-v7:21.0.3'
+    implementation 'androidx.test:monitor:1.8.0'
+    implementation 'androidx.test.ext:junit:1.3.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'

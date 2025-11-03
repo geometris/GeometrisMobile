@@ -1,1 +1,12 @@
 include ':app', ':wqlib'
+
+// Add this block
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        // Add other repositories like jitpack.io if needed by your dependencies
+        maven { url 'https://jitpack.io' }
+    }
+}

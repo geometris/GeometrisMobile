@@ -15,7 +15,7 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.ParcelUuid;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.util.Log;
 
 import java.lang.reflect.Method;

@@ -1,7 +1,7 @@
 package com.geometris.wqlib;
 
 import android.os.ParcelUuid;
-import android.support.annotation.RequiresPermission;
+import androidx.annotation.RequiresPermission;
 import android.util.Log;
 
 import java.util.ArrayList;

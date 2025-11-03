@@ -8,13 +8,13 @@ import java.io.Serializable;
  */
 public class UnidentifiedEvent implements Serializable {
     private Integer reason;
-    private Integer timestamp;
+    private Long timestamp;
     private Double engTotalHours;   //total hours
     private Double vehicleSpeed; //vehicle Speed
     private Double odometer;     // HiResTotalDistance
     private Double latitude;        // Latitude
     private Double longitude;        // Longitude
-    private Integer gpsTimeStamp;
+    private Long gpsTimeStamp;
 
     public UnidentifiedEvent() {
         reason = null;
@@ -46,13 +46,13 @@ public class UnidentifiedEvent implements Serializable {
      * Timestamp for the event, when it happened.
      * @return Timestamp for the event.
      */
-    public Integer getTimestamp(){return timestamp;}
+    public Long getTimestamp(){return timestamp;}
 
     /**
      * {@link UnidentifiedEvent#getTimestamp()}
      * @param timestamp value for the timestamp for the event.
      */
-    public void setTimestamp(Integer timestamp){
+    public void setTimestamp(Long timestamp){
         this.timestamp = timestamp;
     }
 
@@ -142,13 +142,13 @@ public class UnidentifiedEvent implements Serializable {
      * GPS fix age.
      * @return gps fix age.
      */
-    public Integer getGPSTimestamp(){return gpsTimeStamp;}
+    public Long getGPSTimestamp(){return gpsTimeStamp;}
 
     /**
      * {@link UnidentifiedEvent#getGPSTimestamp()}
      * @param gpsTimeStamp value for gps fix age.
      */
-    public void setGPSTimestamp(Integer gpsTimeStamp){
+    public void setGPSTimestamp(Long gpsTimeStamp){
         this.gpsTimeStamp = gpsTimeStamp;
     }
 
